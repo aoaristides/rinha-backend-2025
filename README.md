@@ -12,4 +12,4 @@ Este projeto foi feito para a Rinha de Backend 2025, buscando equilibrar desempe
 
 ## Resultados dos testes
 
-![image](https://github.com/user-attachments/assets/308570d8-7886-4fbf-a5c4-b1b044d48f76)
+![image]()
