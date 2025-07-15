@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+
+  backendDB:
+    image: postgres:16-alpine
+    hostname: backendDB
+    environment:
+      - POSTGRES_PASSWORD=backend
+      - POSTGRES_USER=backend
+      - POSTGRES_DB=backendDB
+    ports:
+      - "5432:5432"
+    command: postgres -c max_connections=450 -c shared_buffers=40MB -c effective_cache_size=120MB -c work_mem=4MB -c maintenance_work_mem=16MB -c synchronous_commit=off -c fsync=off
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U rinha -d rinha" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "165MB"
+
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    ports:
+      - "5672:5672" # rabbitmq port
+      - "15672:15672" # app port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - backend
+
+networks:
+  payment-processor:
+    external: true
+  backend:
+    driver: bridge
