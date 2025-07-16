@@ -2,20 +2,24 @@ version: '3.9'
 
 services:
 
-  backendDB:
-    image: postgres:16-alpine
-    hostname: backendDB
+  rinhaDB:
+    image: postgres:17-alpine
+    container_name: rinhaDB
+    hostname: rinhaDB
+    restart: on-failure
     environment:
       - POSTGRES_PASSWORD=backend
       - POSTGRES_USER=backend
       - POSTGRES_DB=backendDB
     ports:
       - "5432:5432"
+    volumes:
+      - "./.docker/data/rinhadb:/var/lib/postgresql/data"
     command: postgres -c max_connections=450 -c shared_buffers=40MB -c effective_cache_size=120MB -c work_mem=4MB -c maintenance_work_mem=16MB -c synchronous_commit=off -c fsync=off
     networks:
       - backend
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U rinha -d rinha" ]
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
       interval: 10s
       timeout: 5s
       retries: 5

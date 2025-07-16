@@ -4,7 +4,7 @@ amqp:
   username: ${AMQP_RABBIT_USERNAME:admin}
   password: ${AMQP_RABBIT_PASSWORD:admin}
   admin:
-    auto-create: ${AMQP_ADMIN_AUTO_CREATE:false}
+    auto-create: ${AMQP_ADMIN_AUTO_CREATE:true}
   queues:
     payment-processor-created:
       exchange: payment.processor.events
