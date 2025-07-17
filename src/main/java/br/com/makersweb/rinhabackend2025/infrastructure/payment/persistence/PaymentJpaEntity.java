@@ -21,7 +21,7 @@ public class PaymentJpaEntity {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "correlationId", nullable = false)
+    @Column(name = "correlation_id", nullable = false)
     private String correlationId;
 
     @Column(name = "amount", nullable = false)
@@ -30,14 +30,18 @@ public class PaymentJpaEntity {
     @Column(name = "requested_at", nullable = false, columnDefinition = "TIMESTAMP")
     private Instant requestedAt;
 
+    @Column(name = "processed_at_default", nullable = false)
+    private Boolean processedAtDefault;
+
     public PaymentJpaEntity() {
     }
 
-    private PaymentJpaEntity(String id, String correlationId, BigDecimal amount, Instant requestedAt) {
+    private PaymentJpaEntity(String id, String correlationId, BigDecimal amount, Instant requestedAt,  Boolean processedAtDefault) {
         this.id = id;
         this.correlationId = correlationId;
         this.amount = amount;
         this.requestedAt = requestedAt;
+        this.processedAtDefault = processedAtDefault;
     }
 
     public static PaymentJpaEntity from(final Payment aPayment) {
@@ -45,7 +49,8 @@ public class PaymentJpaEntity {
                 aPayment.getId().getValue(),
                 aPayment.getCorrelationId(),
                 aPayment.getAmount(),
-                aPayment.getRequestedAt()
+                aPayment.getRequestedAt(),
+                aPayment.getByDefault()
         );
     }
 
@@ -54,7 +59,8 @@ public class PaymentJpaEntity {
                 PaymentID.from(getId()),
                 getCorrelationId(),
                 getAmount(),
-                getRequestedAt()
+                getRequestedAt(),
+                getProcessedAtDefault()
         );
     }
 
@@ -88,5 +94,13 @@ public class PaymentJpaEntity {
 
     public void setRequestedAt(Instant requestedAt) {
         this.requestedAt = requestedAt;
+    }
+
+    public Boolean getProcessedAtDefault() {
+        return processedAtDefault;
+    }
+
+    public void setProcessedAtDefault(Boolean processedAtDefault) {
+        this.processedAtDefault = processedAtDefault;
     }
 }

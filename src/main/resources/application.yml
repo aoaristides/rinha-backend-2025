@@ -11,8 +11,14 @@ amqp:
       routing-key: payment.processor.created
       queue: payment.processor.queue
 
+api:
+  default:
+    url: ${PROCESSOR_DEFAULT_URL:http://localhost:8001}
+  fallback:
+    url: ${PROCESSOR_FALLBACK_URL:http://localhost:8002}
+
 server:
-  port: ${PORT:8082}
+  port: ${PORT:9999}
   compression:
     enabled: true
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json

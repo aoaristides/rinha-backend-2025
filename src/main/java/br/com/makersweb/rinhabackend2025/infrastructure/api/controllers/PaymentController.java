@@ -3,7 +3,10 @@ package br.com.makersweb.rinhabackend2025.infrastructure.api.controllers;
 import br.com.makersweb.rinhabackend2025.application.payment.create.CreatePaymentCommand;
 import br.com.makersweb.rinhabackend2025.application.payment.create.CreatePaymentUseCase;
 import br.com.makersweb.rinhabackend2025.infrastructure.api.PaymentAPI;
-import br.com.makersweb.rinhabackend2025.infrastructure.payment.models.CreatePaymentProcessorRequest;
+import br.com.makersweb.rinhabackend2025.infrastructure.configuration.json.Json;
+import br.com.makersweb.rinhabackend2025.infrastructure.payment.models.CreatePaymentRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PaymentController implements PaymentAPI {
 
+    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
+
     private final CreatePaymentUseCase  createPaymentUseCase;
 
     public PaymentController(final CreatePaymentUseCase createPaymentUseCase) {
@@ -20,11 +25,11 @@ public class PaymentController implements PaymentAPI {
     }
 
     @Override
-    public ResponseEntity<?> createPayment(final CreatePaymentProcessorRequest input) {
+    public ResponseEntity<?> createPayment(final CreatePaymentRequest input) {
+        log.info("Create payment request: {}", Json.writeValueAsString(input));
         final var aCommand = CreatePaymentCommand.with(
                 input.correlationId(),
-                input.amount(),
-                input.requestedAt()
+                input.amount()
         );
 
         return ResponseEntity.ok(this.createPaymentUseCase.execute(aCommand));

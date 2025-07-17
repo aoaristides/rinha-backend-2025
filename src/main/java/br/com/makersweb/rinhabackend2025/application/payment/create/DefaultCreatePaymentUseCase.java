@@ -20,9 +20,8 @@ public class DefaultCreatePaymentUseCase extends CreatePaymentUseCase {
     public CreatePaymentOutput execute(final CreatePaymentCommand aCommand) {
         final var correlationId = aCommand.correlationId();
         final var amount = aCommand.amount();
-        final var requestedAt = aCommand.requestedAt();
 
-        final var aPayment = Payment.newPayment(correlationId, amount, requestedAt);
+        final var aPayment = Payment.newPayment(correlationId, amount);
         this.paymentGateway.create(aPayment);
 
         return CreatePaymentOutput.from("payment processed successfully");

@@ -7,16 +7,14 @@ import java.math.BigDecimal;
  * @author anderson
  * @param correlationId
  * @param amount
- * @param requestedAt
  */
 public record CreatePaymentCommand(
         String correlationId,
-        BigDecimal amount,
-        String requestedAt
+        BigDecimal amount
 ) {
 
-    public static CreatePaymentCommand with(final String correlationId, final BigDecimal amount, final String requestedAt) {
-        return new CreatePaymentCommand(correlationId, amount, requestedAt);
+    public static CreatePaymentCommand with(final String correlationId, final BigDecimal amount) {
+        return new CreatePaymentCommand(correlationId, amount);
     }
 
 }

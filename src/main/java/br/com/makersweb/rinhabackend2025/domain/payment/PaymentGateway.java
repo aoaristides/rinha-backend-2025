@@ -7,4 +7,6 @@ public interface PaymentGateway {
 
     Payment create(final Payment aPayment);
 
+    Payment save(final Payment aPayment, final boolean byDefault);
+
 }

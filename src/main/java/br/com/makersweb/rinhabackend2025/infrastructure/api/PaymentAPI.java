@@ -1,6 +1,6 @@
 package br.com.makersweb.rinhabackend2025.infrastructure.api;
 
-import br.com.makersweb.rinhabackend2025.infrastructure.payment.models.CreatePaymentProcessorRequest;
+import br.com.makersweb.rinhabackend2025.infrastructure.payment.models.CreatePaymentRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +17,6 @@ public interface PaymentAPI {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ResponseEntity<?> createPayment(@RequestBody CreatePaymentProcessorRequest input);
+    ResponseEntity<?> createPayment(@RequestBody CreatePaymentRequest input);
 
 }

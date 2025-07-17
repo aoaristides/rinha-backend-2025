@@ -3,7 +3,7 @@ package br.com.makersweb.rinhabackend2025.infrastructure.payment;
 import br.com.makersweb.rinhabackend2025.domain.payment.Payment;
 import br.com.makersweb.rinhabackend2025.domain.payment.PaymentGateway;
 import br.com.makersweb.rinhabackend2025.infrastructure.configuration.annotations.PaymentProcessorCreatedQueue;
-import br.com.makersweb.rinhabackend2025.infrastructure.payment.models.PaymentProcessorRequest;
+import br.com.makersweb.rinhabackend2025.infrastructure.payment.models.PaymentRequest;
 import br.com.makersweb.rinhabackend2025.infrastructure.payment.persistence.PaymentJpaEntity;
 import br.com.makersweb.rinhabackend2025.infrastructure.payment.persistence.PaymentRepository;
 import br.com.makersweb.rinhabackend2025.infrastructure.services.EventService;
@@ -35,15 +35,21 @@ public class DefaultPaymentGateway implements PaymentGateway {
     @Override
     public Payment create(final Payment aPayment) {
         log.info("Creating Payment with id {}", aPayment.getId());
-        final var aResult = this.paymentRepository.save(PaymentJpaEntity.from(aPayment)).toAggregate();
-        final var paymentProcessorRequest = PaymentProcessorRequest.with(
-                aResult.getId().getValue(),
-                aResult.getCorrelationId(),
-                aResult.getAmount(),
-                aResult.getRequestedAt()
+        final var paymentProcessorRequest = PaymentRequest.with(
+                aPayment.getId().getValue(),
+                aPayment.getCorrelationId(),
+                aPayment.getAmount(),
+                aPayment.getRequestedAt()
         );
         this.eventService.send(paymentProcessorRequest);
         log.info("Payment with id {} has been created", aPayment.getId());
-        return aResult;
+        return aPayment;
+    }
+
+    @Override
+    public Payment save(final Payment aPayment, final boolean byDefault) {
+        log.info("Saving Payment with id {} and default {}", aPayment.getId(), byDefault);
+        aPayment.addDefault(byDefault);
+        return this.paymentRepository.save(PaymentJpaEntity.from(aPayment)).toAggregate();
     }
 }

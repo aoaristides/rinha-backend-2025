@@ -4,7 +4,6 @@ import br.com.makersweb.rinhabackend2025.domain.AggregateRoot;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
@@ -13,30 +12,38 @@ import java.util.Objects;
  */
 public class Payment extends AggregateRoot<PaymentID> {
 
-   private String correlationId;
-   private BigDecimal amount;
-   private Instant requestedAt;
+   private final String correlationId;
+   private final BigDecimal amount;
+   private final Instant requestedAt;
+   private Boolean byDefault;
 
-    private Payment(PaymentID anId, String correlationId, BigDecimal amount, Instant aRequestedAt) {
+    private Payment(PaymentID anId, String correlationId, BigDecimal amount, Instant aRequestedAt, Boolean byDefault) {
         super(anId);
         this.correlationId = correlationId;
         this.amount = amount;
         this.requestedAt =  Objects.requireNonNull(aRequestedAt, "'requestedAt' should not be null");
+        this.byDefault = byDefault;
     }
 
-    public static Payment newPayment(String correlationId, BigDecimal amount, String aRequestedAt) {
+    public static Payment newPayment(String correlationId, BigDecimal amount) {
         final var anId = PaymentID.unique();
-        final var requestedAt = convertDate(aRequestedAt);
-        return new Payment(anId, correlationId, amount, requestedAt);
+        final var requestedAt = Instant.now();
+        return new Payment(anId, correlationId, amount, requestedAt, Boolean.FALSE);
     }
 
     public static Payment with(
             final PaymentID anId,
             final String correlationId,
             final BigDecimal amount,
-            final Instant aRequestedAt
+            final Instant aRequestedAt,
+            final Boolean byDefault
     ) {
-        return new Payment(anId, correlationId, amount, aRequestedAt);
+        return new Payment(anId, correlationId, amount, aRequestedAt,  byDefault);
+    }
+
+    public Payment addDefault(final Boolean byDefault) {
+        this.byDefault = byDefault;
+        return this;
     }
 
     public static Payment with(final Payment aPayment) {
@@ -44,7 +51,8 @@ public class Payment extends AggregateRoot<PaymentID> {
                 aPayment.getId(),
                 aPayment.correlationId,
                 aPayment.amount,
-                aPayment.requestedAt
+                aPayment.requestedAt,
+                aPayment.byDefault
         );
     }
 
@@ -72,5 +80,9 @@ public class Payment extends AggregateRoot<PaymentID> {
 
     public Instant getRequestedAt() {
         return requestedAt;
+    }
+
+    public Boolean getByDefault() {
+        return byDefault;
     }
 }
