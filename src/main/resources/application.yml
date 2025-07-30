@@ -1,3 +1,41 @@
+server:
+  port: 9999
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  tomcat:
+    threads:
+      max: ${MAX_POOL_CONNECTION:4}
+    max-connections: ${MAX_POOL_CONNECTION:4}
+
 spring:
   application:
     name: rinha-backend-2025
+  datasource:
+    url: jdbc:postgresql://${DB_HOSTNAME:localhost}:5432/backendDB
+    username: postgres
+    password: postgres
+    hikari:
+      auto-commit: false
+      connection-timeout: 250
+      max-lifetime: 600000
+      maximum-pool-size: ${MAX_POOL_CONNECTION:4}
+      minimum-idle: 10
+      pool-name: master
+    tomcat:
+      max-active: ${MAX_POOL_CONNECTION:5}
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+

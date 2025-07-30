@@ -18,7 +18,11 @@
         <license/>
     </licenses>
     <developers>
-        <developer/>
+        <developer>
+            <name>Anderson O. Aristides</name>
+            <organization>makersweb</organization>
+            <organizationUrl>https://www.makersweb.com.br</organizationUrl>
+        </developer>
     </developers>
     <scm>
         <connection/>
