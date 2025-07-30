@@ -1,18 +1,17 @@
 # Stage 1: Build the Spring Boot application
-FROM amazoncorretto:24-jdk-alpine AS builder
+FROM amazoncorretto:24-alpine-jdk AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the Maven/Gradle build files and source code
-COPY pom.xml .
-COPY src ./src
+COPY . .
 
 # Build the application (adjust for Gradle if needed)
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Create the final image
-FROM amazoncorretto:24-jre-alpine
+FROM amazoncorretto:24-alpine-jdk
 
 # Set the working directory inside the container
 WORKDIR /app
