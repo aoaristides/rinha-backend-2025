@@ -1,0 +1,71 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: payment-gateway
+  main:
+    banner-mode: "off"
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/backendDB}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:5}
+      minimum-idle: ${DB_POOL_MIN:1}
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 600000
+      keepalive-time: 300000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.batch_size: 25
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.default_batch_fetch_size: 50
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+processors:
+  default:
+    baseUrl: ${PROCESSORS_DEFAULT_BASEURL:http://processor-default:8080}
+    feePercent: ${PROCESSORS_DEFAULT_FEEPERCENT:0.05}
+  fallback:
+    baseUrl: ${PROCESSORS_FALLBACK_BASEURL:http://processor-fallback:8080}
+    feePercent: ${PROCESSORS_FALLBACK_FEEPERCENT:0.07}
+
+timeouts:
+  paymentMs: ${TIMEOUTS_PAYMENTMS:1500}
+  healthMs: ${TIMEOUTS_HEALTHMS:500}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      defaultProcessor:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+      fallbackProcessor:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  bulkhead:
+    instances:
+      defaultProcessor:
+        maxConcurrentCalls: 50
+        maxWaitDuration: 50ms
+      fallbackProcessor:
+        maxConcurrentCalls: 50
+        maxWaitDuration: 50ms

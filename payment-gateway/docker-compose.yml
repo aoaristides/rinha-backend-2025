@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+
+  backendDB:
+    image: postgres:17-alpine
+    container_name: backendDB
+    hostname: backendDB
+    restart: on-failure
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=backendDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./.docker/data/backendDB:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "backendDB" ]
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: "250MB"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+  payment-processor:
+    external: true
