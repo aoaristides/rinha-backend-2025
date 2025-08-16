@@ -1,4 +1,4 @@
-package br.com.makersweb.rinhabackend2025.api;
+package br.com.makersweb.rinhabackend2025.infrastructure.api;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;

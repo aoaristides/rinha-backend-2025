@@ -1,7 +1,7 @@
 CREATE UNLOGGED TABLE payments(
     correlation_id VARCHAR(255) NOT NULL PRIMARY KEY,
     amount DECIMAL(19,2) NOT NULL,
-    processed_by BOOLEAN NOT NULL DEFAULT TRUE,
+    processed_by VARCHAR(30) NOT NULL,
     requested_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 

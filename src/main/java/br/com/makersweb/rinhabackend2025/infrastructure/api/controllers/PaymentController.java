@@ -1,6 +1,6 @@
-package br.com.makersweb.rinhabackend2025.api.controllers;
+package br.com.makersweb.rinhabackend2025.infrastructure.api.controllers;
 
-import br.com.makersweb.rinhabackend2025.api.PaymentAPI;
+import br.com.makersweb.rinhabackend2025.infrastructure.api.PaymentAPI;
 import br.com.makersweb.rinhabackend2025.domain.models.CreatePaymentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -30,7 +30,7 @@ public class Payment implements Serializable {
     private BigDecimal amount;
 
     @Column(name = "processed_by", nullable = false)
-    private boolean processedBy;
+    private String processedBy;
 
     @Column(name = "requested_at")
     private Instant requestedAt;
