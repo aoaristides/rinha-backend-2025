@@ -6,6 +6,9 @@ spring:
     name: payment-gateway
   main:
     banner-mode: "off"
+  http:
+    client:
+      factory: simple
 
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/backendDB}
@@ -36,10 +39,10 @@ spring:
 
 processors:
   default:
-    baseUrl: ${PROCESSORS_DEFAULT_BASEURL:http://processor-default:8080}
+    baseUrl: ${PROCESSORS_DEFAULT_BASEURL:http://localhost:8001}
     feePercent: ${PROCESSORS_DEFAULT_FEEPERCENT:0.05}
   fallback:
-    baseUrl: ${PROCESSORS_FALLBACK_BASEURL:http://processor-fallback:8080}
+    baseUrl: ${PROCESSORS_FALLBACK_BASEURL:http://localhost:8002}
     feePercent: ${PROCESSORS_FALLBACK_FEEPERCENT:0.07}
 
 timeouts:

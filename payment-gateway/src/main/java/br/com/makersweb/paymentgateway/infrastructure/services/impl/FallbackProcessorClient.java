@@ -19,17 +19,17 @@ import java.util.Map;
  * @author aaristides
  */
 @Service
-@Qualifier("defaultClient")
+@Qualifier("fallbackClient")
 @Slf4j
-public class DefaultProcessorClient implements ProcessorClient {
+public class FallbackProcessorClient implements ProcessorClient {
 
     private final WebClient client;
     private final String baseUrl;
     private final BigDecimal fee;
 
-    public DefaultProcessorClient(WebClient defaultWebClient,
-                                  @Value("${processors.default.baseUrl}") String baseUrl,
-                                  @Value("${processors.default.feePercent}") BigDecimal fee) {
+    public FallbackProcessorClient(WebClient defaultWebClient,
+                                   @Value("${processors.fallback.baseUrl}") String baseUrl,
+                                   @Value("${processors.fallback.feePercent}") BigDecimal fee) {
         this.client = defaultWebClient;
         this.baseUrl = baseUrl;
         this.fee = fee;
@@ -37,7 +37,7 @@ public class DefaultProcessorClient implements ProcessorClient {
 
     @Override
     public ProcessorType type() {
-        return ProcessorType.DEFAULT;
+        return ProcessorType.FALLBACK;
     }
 
     @Override
@@ -46,18 +46,12 @@ public class DefaultProcessorClient implements ProcessorClient {
     }
 
     @Override
-    public Mono<ProcessorResult> pay(String correlationId, BigDecimal amount) {
+    public Mono<ProcessorResult> pay(final String correlationId, final BigDecimal amount) {
         return client.post().uri(baseUrl.concat("/payments"))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(PaymentRequest.with(correlationId, amount))
-                .exchangeToMono(resp -> {
-                    if (resp.statusCode().is2xxSuccessful()) {
-                        return resp.bodyToMono(Map.class).defaultIfEmpty(Map.of())
-                                .map(b -> new ProcessorResult(resp.statusCode().is2xxSuccessful(), resp.statusCode().value()));
-                    } else {
-                        return Mono.error(new RuntimeException("Erro na requisição: " + resp.statusCode()));
-                    }
-                });
+                .exchangeToMono(resp -> resp.bodyToMono(Map.class)
+                        .defaultIfEmpty(Map.of())
+                        .map(b -> new ProcessorResult(resp.statusCode().is2xxSuccessful(), resp.statusCode().value())));
     }
-
 }
